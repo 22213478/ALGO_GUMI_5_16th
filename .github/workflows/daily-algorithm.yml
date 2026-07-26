@@ -1,0 +1,34 @@
+name: 오늘의 알고리즘 문제
+
+on:
+  schedule:
+    # 월~금 00:00 UTC = 09:00 KST
+    - cron: "0 0 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      study_date:
+        description: "출제할 날짜 (YYYY-MM-DD, 비우면 오늘 KST)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: daily-algorithm
+  cancel-in-progress: false
+
+jobs:
+  create-problems:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 저장소 가져오기
+        uses: actions/checkout@v6
+
+      - name: 상·중·하 Issue와 Discord 알림 생성
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          STUDY_DATE: ${{ inputs.study_date }}
+        run: node scripts/create-daily-algorithm.mjs
