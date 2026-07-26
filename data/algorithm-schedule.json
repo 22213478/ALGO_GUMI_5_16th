@@ -1,0 +1,22 @@
+{
+  "_example": {
+    "high": {
+      "number": "0000",
+      "title": "관리자가 선택한 심화 문제",
+      "difficulty": "D5",
+      "url": "https://swexpertacademy.com/..."
+    },
+    "medium": {
+      "number": "5215",
+      "title": "햄버거 다이어트",
+      "difficulty": "D3",
+      "url": "https://swexpertacademy.com/..."
+    },
+    "low": {
+      "number": "0000",
+      "title": "관리자가 선택한 입문 문제",
+      "difficulty": "D2",
+      "url": "https://swexpertacademy.com/..."
+    }
+  }
+}
