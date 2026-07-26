@@ -74,6 +74,26 @@ function validateProblem(level, problem, location) {
   }
 }
 
+export function validateProblemBank(bank) {
+  if (!bank || typeof bank !== "object" || Array.isArray(bank)) {
+    throw new Error("algorithm-problems.json은 JSON 객체여야 합니다.");
+  }
+
+  const problemNumbers = new Set();
+  for (const level of Object.keys(levelDefinitions)) {
+    if (!Array.isArray(bank[level]) || bank[level].length === 0) {
+      throw new Error(`문제 은행의 ${level} 배열이 비어 있습니다.`);
+    }
+    for (const [index, problem] of bank[level].entries()) {
+      validateProblem(level, problem, `algorithm-problems.${level}[${index}]`);
+      if (problemNumbers.has(problem.number)) {
+        throw new Error(`문제 은행에 중복된 문제 번호가 있습니다: ${problem.number}`);
+      }
+      problemNumbers.add(problem.number);
+    }
+  }
+}
+
 export function validateSchedule(schedule) {
   if (!schedule || typeof schedule !== "object" || Array.isArray(schedule)) {
     throw new Error("algorithm-schedule.json은 JSON 객체여야 합니다.");

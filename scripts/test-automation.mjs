@@ -4,6 +4,7 @@ import {
   buildDiscordMessage,
   buildIssueBody,
   dateInfoInTimezone,
+  validateProblemBank,
   validateSchedule,
 } from "./study-utils.mjs";
 
@@ -13,7 +14,14 @@ const schedule = JSON.parse(
     "utf8",
   ),
 );
+const problemBank = JSON.parse(
+  await readFile(
+    new URL("../data/algorithm-problems.json", import.meta.url),
+    "utf8",
+  ),
+);
 assert.doesNotThrow(() => validateSchedule(schedule));
+assert.doesNotThrow(() => validateProblemBank(problemBank));
 
 const dateInfo = dateInfoInTimezone(
   "Asia/Seoul",
@@ -50,4 +58,6 @@ assert.throws(
   /D5, D6/,
 );
 
-console.log("알고리즘 자동화 테스트 통과: 상·중·하 일정과 Discord 메시지");
+console.log(
+  `알고리즘 자동화 테스트 통과: 문제 은행 ${Object.values(problemBank).flat().length}개`,
+);

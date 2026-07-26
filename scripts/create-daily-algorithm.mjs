@@ -7,6 +7,7 @@ import {
   buildIssueBody,
   dateInfoInTimezone,
   levelDefinitions,
+  validateProblemBank,
   validateSchedule,
 } from "./study-utils.mjs";
 
@@ -24,7 +25,11 @@ if (/\/github\/?(?:\?.*)?$/.test(webhookUrl)) {
 const schedule = JSON.parse(
   await readFile(path.join(root, "data", "algorithm-schedule.json"), "utf8"),
 );
+const problemBank = JSON.parse(
+  await readFile(path.join(root, "data", "algorithm-problems.json"), "utf8"),
+);
 validateSchedule(schedule);
+validateProblemBank(problemBank);
 
 const automaticDate = dateInfoInTimezone(timezone);
 const requestedDate = process.env.STUDY_DATE?.trim();
@@ -34,13 +39,7 @@ if (requestedDate && !/^\d{4}-\d{2}-\d{2}$/.test(requestedDate)) {
 const dateInfo = requestedDate
   ? { key: requestedDate, display: requestedDate }
   : automaticDate;
-const problems = schedule[dateInfo.key];
-
-if (!problems) {
-  throw new Error(
-    `${dateInfo.key} 문제가 없습니다. data/algorithm-schedule.json에 high, medium, low 문제를 등록하세요.`,
-  );
-}
+const scheduledProblems = schedule[dateInfo.key];
 
 const { api, paginate, ensureLabel, repository } = createGitHubClient();
 await ensureLabel("daily-algorithm", "1D76DB", "매일 자동으로 출제되는 알고리즘 문제");
@@ -51,13 +50,19 @@ const issues = await paginate(
 );
 
 for (const [level, definition] of Object.entries(levelDefinitions)) {
-  const problem = problems[level];
   const dateMarker = `<!-- daily-algorithm-date: ${dateInfo.key} -->`;
   const levelMarker = `<!-- algorithm-level: ${level} -->`;
   let issue = issues.find(
     (candidate) =>
       candidate.body?.includes(dateMarker) && candidate.body?.includes(levelMarker),
   );
+  const previousIssueCount = issues.filter(
+    (candidate) =>
+      candidate.body?.includes(levelMarker) && !candidate.body?.includes(dateMarker),
+  ).length;
+  const problem =
+    scheduledProblems?.[level] ??
+    problemBank[level][previousIssueCount % problemBank[level].length];
 
   if (!issue) {
     const levelLabel = `난이도:${definition.korean}`;
