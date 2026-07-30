@@ -15,22 +15,24 @@ def algorithm():
 
     result = []
     queue = deque()
-    start = [node for node in range(1, V + 1) if indegree[node] == 0][0]
+    for node in range(1, V + 1):
+        if indegree[node] == 0:
+            queue.append(node)
+            result.append(node)
 
-    queue.append(start)
-    result.append(start)
-    while(queue):
+    while queue:
         node = queue.popleft()
 
+        if node not in graph: continue
         for next_node in graph[node]:
             indegree[next_node] -= 1
             if indegree[next_node] == 0:
                 queue.append(next_node)
                 result.append(next_node)
 
-    return " ".join(result)
+    return " ".join(map(str, result))
 
 
 # 여러개의 테스트 케이스가 주어지므로, 각각을 처리합니다.
 for test_case in range(1, 11):
-    print(f"{test_case} {algorithm()}")
+    print(f"#{test_case} {algorithm()}")
