@@ -156,6 +156,8 @@ GitHub에서 `base repository`는 `YEOUL0520/ALGO_GUMI_5_16th`, `base`는 `main`
 ## 관리자 운영
 
 - 자동 출제: 월요일~금요일 09:07 KST
+- 워크플로에 `Asia/Seoul` 시간대를 명시해 UTC 변환 오류를 방지합니다.
+- GitHub Actions 예약 실행은 서비스 혼잡 시 지연될 수 있습니다.
 - 일정 입력 권장 시각: 전날 23:59 이전
 - 수동 실행: `Actions → 오늘의 알고리즘 문제 → Run workflow`
 - 수동 실행 시 `study_date`에 `YYYY-MM-DD`를 넣어 특정 날짜를 테스트할 수 있습니다.
