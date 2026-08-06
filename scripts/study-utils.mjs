@@ -1,7 +1,7 @@
 export const levelDefinitions = {
   high: {
     korean: "상",
-    allowedDifficulties: ["D5", "D6"],
+    allowedDifficulties: ["D5", "D6", "D8", "A형"],
     color: "B60205",
   },
   medium: {
